@@ -1,5 +1,5 @@
 import { JwtAuthGuard, RmqService } from '@app/common';
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Post, UseGuards } from '@nestjs/common';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { BillingService } from './billing.service';
 

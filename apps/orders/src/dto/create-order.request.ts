@@ -1,19 +1,30 @@
 import {
+  IsArray,
+  IsDate,
   IsNotEmpty,
-  IsPhoneNumber,
   IsPositive,
   IsString,
 } from 'class-validator';
 
 export class CreateOrderRequest {
+  @IsArray()
+  orders: CreateOrderObjectRequest[];
   
+
+}
+export class CreateOrderObjectRequest {
   @IsString()
   @IsNotEmpty()
   name: string;
 
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
   @IsPositive()
   price: number;
 
-  @IsPhoneNumber()
-  phoneNumber: string;
+  @IsPositive()
+  quantity: number;
+
 }
