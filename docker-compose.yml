@@ -10,6 +10,7 @@ services:
     depends_on:
       - billing
       - auth
+      - items
       - rabbitmq
     volumes:
       - .:/usr/src/app
@@ -31,6 +32,23 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+  
+  items:
+    build:
+      context: .
+      dockerfile: ./apps/items/Dockerfile
+      target: development
+    command: npm run start:dev items
+    env_file:
+      - apps/items/.env
+    depends_on:
+      - auth
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3002:3002'
 
   auth:
     build:

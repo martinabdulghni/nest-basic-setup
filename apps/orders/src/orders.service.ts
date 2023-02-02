@@ -1,23 +1,32 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateOrderRequest } from './dto/create-order.request';
 import { OrdersRepository } from './orders.repository';
 import { BILLING_SERVICE } from './constans/services';
 import { lastValueFrom } from 'rxjs';
+import { ItemRepository } from 'apps/items/src/items.repository';
 
 @Injectable()
 export class OrdersService {
   private readonly logger = new Logger(OrdersService.name);
-
   constructor(
     private readonly orderRepository: OrdersRepository,
     @Inject(BILLING_SERVICE) private billingClient: ClientProxy,
+    private readonly itemRepository: ItemRepository,
   ) {}
+
+  //! @POST
   async createOrder(request: CreateOrderRequest, authentication: string) {
-    this.logger.log(request.orders);
     const session = await this.orderRepository.startTransaction();
     try {
-      const order = { orders: request.orders };
+      let order = { orders: request.orders };
+
+      // If item found -> return its id.
+      for (const o of order.orders) {
+        const itemId = await this.findItemId(o.name);
+        o.itemId = itemId.toString();
+      }
+
       const createdOrder = await this.orderRepository.create(order, {
         session,
       });
@@ -34,6 +43,29 @@ export class OrdersService {
     } catch (error) {
       await session.abortTransaction();
       throw error;
+    }
+  }
+
+  async findItemId(name: string) {
+    try {
+      const item = await this.itemRepository.findOne({
+        name: name,
+      });
+      return item._id;
+    } catch (error) {
+      throw new NotFoundException(`item with name: ${name} does not exist`);
+    }
+  }
+
+  //! @GET
+  async getOrder(id: string) {
+    try {
+      const item = await this.orderRepository.findOne({
+        _id: id,
+      });
+      return item;
+    } catch (error) {
+      throw new NotFoundException(`No item with id: ${id} found`);
     }
   }
 

@@ -5,26 +5,20 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class CreateOrderRequest {
   @IsArray()
   orders: CreateOrderObjectRequest[];
-  
-
 }
 export class CreateOrderObjectRequest {
   @IsString()
   @IsNotEmpty()
   name: string;
-
   @IsString()
   @IsNotEmpty()
-  description: string;
-
-  @IsPositive()
-  price: number;
+  itemId: string;
 
   @IsPositive()
   quantity: number;
-
 }
