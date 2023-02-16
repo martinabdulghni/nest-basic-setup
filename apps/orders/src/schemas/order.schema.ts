@@ -6,16 +6,8 @@ import { CreateOrderObjectRequest } from '../dto/create-order.request';
 export class Order extends AbstractDocument {
   @Prop()
   orders: CreateOrderObjectRequest[];
-
-
-  // @Prop()
-  // name: string;
-
-  // @Prop()
-  // price: number;
-
-  // @Prop()
-  // phoneNumber: string;
+  @Prop()
+  userId: string;
 }
 
 export const orderSchema = SchemaFactory.createForClass(Order);

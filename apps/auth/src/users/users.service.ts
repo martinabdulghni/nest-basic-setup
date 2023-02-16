@@ -13,6 +13,8 @@ export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async createUser(request: CreateUserRequest) {
+    request.isAdmin = false;
+    
     await this.validateCreateUserRequest(request);
     const user = await this.usersRepository.create({
       ...request,

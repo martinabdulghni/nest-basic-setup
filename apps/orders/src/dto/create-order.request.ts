@@ -18,6 +18,9 @@ export class CreateOrderObjectRequest {
   @IsString()
   @IsNotEmpty()
   itemId: string;
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
 
   @IsPositive()
   quantity: number;

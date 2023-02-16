@@ -36,7 +36,6 @@ export class AuthService {
   async logout(response: Response) {
     response.cookie('Authentication', '', {
       httpOnly: true,
-      expires: new Date(),
     });
   }
 }
