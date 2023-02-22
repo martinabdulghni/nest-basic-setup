@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from 'apps/auth/src/users/schemas/user.schema';
 import { CreateItemRequest } from './dto/create-item.request';
 import { ItemRepository } from './items.repository';
@@ -14,7 +19,16 @@ export class ItemsService {
     const session = await this.itemRepository.startTransaction();
     try {
       if (user.isAdmin) {
-        const createdOrder = await this.itemRepository.create(request, {
+        let newItem = {
+          ...request,
+          addedDate: new Date(),
+          addedBy: user._id.toString(),
+          isModified: false,
+          history: [],
+          modifiedDate: new Date(),
+        };
+
+        const createdOrder = await this.itemRepository.create(newItem, {
           session,
         });
         await session.commitTransaction();
@@ -33,5 +47,47 @@ export class ItemsService {
     }
 
     throw new ForbiddenException();
+  }
+
+  async modifyItem(id: string, user: User, request: CreateItemRequest) {
+    try {
+      const itemToModify = await this.itemRepository.findOne({
+        _id: id,
+      });
+
+      let {
+        history,
+        _id,
+        isModified,
+        addedDate,
+        addedBy,
+        modifiedDate,
+        ...item
+      } = itemToModify;
+
+      if (user.isAdmin || itemToModify.addedBy === user._id.toString()) {
+        const order = await this.itemRepository.findOneAndUpdate(
+          {
+            _id: id,
+          },
+          {
+            $set: {
+              ...request,
+              isModified: true,
+            },
+            $currentDate: {
+              modifiedDate: true,
+            },
+            $push: {
+              history: { item, modifiedDate: new Date() },
+            },
+          },
+        );
+        return order;
+      }
+      throw new ForbiddenException();
+    } catch (error) {
+      throw new NotFoundException(`No order with id: ${id} found`);
+    }
   }
 }

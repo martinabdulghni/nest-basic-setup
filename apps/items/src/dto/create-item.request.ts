@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsPositive, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsNotEmpty,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 export class CreateItemRequest {
   @IsString()
@@ -14,4 +20,11 @@ export class CreateItemRequest {
 
   @IsPositive()
   quantity: number;
+
+  @IsString()
+  image: string;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isPublished: boolean;
 }

@@ -4,7 +4,9 @@ import {
   Controller,
   Get,
   Logger,
+  Param,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -26,7 +28,7 @@ export class ItemsController {
     @Req() req: any,
     @CurrentUser() user: User,
   ) {
-    return this.itemsService.createItem(
+    return await this.itemsService.createItem(
       request,
       req.cookies?.Authentication,
       user,
@@ -37,5 +39,15 @@ export class ItemsController {
   @UseGuards(JwtAuthGuard)
   async getItems(@CurrentUser() user: User) {
     return this.itemsService.getItems(user);
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  async modifyItem(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @Body() request: CreateItemRequest,
+  ) {
+    return this.itemsService.modifyItem(id, user, request);
   }
 }

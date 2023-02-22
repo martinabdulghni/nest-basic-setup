@@ -5,23 +5,29 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
+import { OrderStatus } from 'libs/types/status';
 import { ObjectId } from 'mongoose';
 
 export class CreateOrderRequest {
   @IsArray()
-  orders: CreateOrderObjectRequest[];
+  items: CreateOrderObjectRequest[];
 }
 export class CreateOrderObjectRequest {
   @IsString()
   @IsNotEmpty()
-  name: string;
-  @IsString()
-  @IsNotEmpty()
   itemId: string;
+
   @IsString()
   @IsNotEmpty()
   userId: string;
 
   @IsPositive()
   quantity: number;
+
+  @IsNotEmpty()
+  @IsDate()
+  date: Date;
+
+  @IsNotEmpty()
+  status: OrderStatus;
 }
