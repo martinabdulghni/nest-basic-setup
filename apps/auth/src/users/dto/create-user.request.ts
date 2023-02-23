@@ -1,4 +1,5 @@
 import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { UserStatus } from 'libs/types/status';
 
 export class CreateUserRequest {
   @IsEmail()
@@ -10,4 +11,8 @@ export class CreateUserRequest {
   password: string;
 
   isAdmin: boolean;
+
+  status: UserStatus;
+
+  lastLoggedIn: boolean;
 }

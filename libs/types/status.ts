@@ -6,6 +6,13 @@ export enum OrderStatus {
   Cancelled = 60,
   Completed = 80,
 }
+
+export enum UserStatus {
+  Online = 'Online',
+  Offline = 'Offline',
+  Busy = 'Busy',
+  Away = 'Away',
+}
 export enum PaymentStatus {
   Pending = 40,
   failed = 60,

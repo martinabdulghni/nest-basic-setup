@@ -1,12 +1,9 @@
-import {
-  Injectable,
-  UnauthorizedException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './users.repository';
 import { CreateUserRequest } from './dto/create-user.request';
 import { User } from './schemas/user.schema';
+import { UserStatus } from 'libs/types/status';
 
 @Injectable()
 export class UsersService {
@@ -14,10 +11,12 @@ export class UsersService {
 
   async createUser(request: CreateUserRequest) {
     request.isAdmin = false;
-    
+
     await this.validateCreateUserRequest(request);
     const user = await this.usersRepository.create({
       ...request,
+      lastLoggedIn: new Date(),
+      status: UserStatus.Online,
       password: await bcrypt.hash(request.password, 10),
     });
     return user;
