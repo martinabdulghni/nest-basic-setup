@@ -118,9 +118,12 @@ export class UsersService {
   }
   async deleteUser(id: string) {
     try {
-      return await this.usersRepository.findOneAndDelete({
-        _id: id,
-      });
+      const user = await this.usersRepository.findOne({ _id: id });
+      if (user) {
+        return await this.usersRepository.findOneAndDelete({
+          _id: id,
+        });
+      }
     } catch (error) {
       throw new NotFoundException(`No Users`);
     }
