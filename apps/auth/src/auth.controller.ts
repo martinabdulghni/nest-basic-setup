@@ -7,6 +7,9 @@ import JwtAuthGuard from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { User } from './users/schemas/user.schema';
 import { Request } from 'express';
+import { RolesAuthGuard } from '@app/common/auth/roles-auth.guard';
+import { UserRole } from 'libs/types/roles';
+import { Roles } from './roles.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -15,16 +18,14 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@CurrentUser() user: User, @Res({ passthrough: true }) response: Response) {
-    await this.authService.login(user, response);
-    response.send(user);
+    return await this.authService.login(user, response);
   }
 
+  @UseGuards(RolesAuthGuard)
+  @Roles(UserRole.User)
   @Post('logout')
   async logout(@Res({ passthrough: true }) response: Response, @Req() request: Request) {
-    const USER_EMAIL = request.cookies['USER_EMAIL'];
-    if (this.authService.isLoggedIn(USER_EMAIL)) {
-      return await this.authService.logout(USER_EMAIL, response);
-    }
+    return await this.authService.logout(request, response);
   }
 
   @UseGuards(JwtAuthGuard)

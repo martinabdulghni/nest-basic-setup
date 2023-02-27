@@ -1,13 +1,15 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
-import { UserStatus } from 'libs/types/status';
+import { Request, Response } from 'express';
+import { UserRoleType } from 'libs/types/roles';
+import { UserConnectionStatus } from 'libs/types/user-status';
 import { User } from './users/schemas/user.schema';
 import { UsersRepository } from './users/users.repository';
 
 export interface TokenPayload {
   userId: string;
+  userRole: UserRoleType;
 }
 
 @Injectable()
@@ -15,8 +17,10 @@ export class AuthService {
   constructor(private readonly usersRepository: UsersRepository, private readonly configService: ConfigService, private readonly jwtService: JwtService) {}
 
   async login(user: User, response: Response) {
+    let userRoles = this.getUserRoles(user);
     const tokenPayload: TokenPayload = {
-      userId: user._id.toHexString(),
+      userId: user._id.toString(),
+      userRole: userRoles,
     };
 
     const expires = new Date();
@@ -29,41 +33,54 @@ export class AuthService {
       expires,
     });
 
-    response.cookie('USER_EMAIL', user.email, {
-      httpOnly: true,
-      expires,
-    });
-
-    await this.userStatus(user.email, UserStatus.Online);
-  }
-
-  async userStatus(user: string, status: UserStatus) {
     try {
       await this.usersRepository.findOneAndUpdate(
         {
-          email: user,
+          _id: user._id,
         },
         {
           $set: {
-            status: status,
+            userConnectionStatus: UserConnectionStatus.Online,
+            lastLoggedIn: new Date(), 
+          },
+        },
+      );
+    } catch (err) {}
+
+    return { status: HttpStatus.OK, userId: user._id };
+  }
+
+  async logout(request: Request, response: Response) {
+    try {
+      await this.usersRepository.findOneAndUpdate(
+        {
+          _id: request.cookies['userId'],
+        },
+        {
+          $set: {
+            userConnectionStatus: UserConnectionStatus.Offline,
             lastLoggedIn: new Date(),
           },
         },
       );
     } catch (err) {}
-  }
-
-  async logout(email: string, response: Response) {
-    this.userStatus(email, UserStatus.Offline);
     response.clearCookie('Authentication');
-    response.clearCookie('USER_EMAIL');
-    return email;
+    return { status: HttpStatus.OK, userStatus: 'Logged out!' };
   }
 
-  isLoggedIn(email: string): boolean {
-    if (email) {
-      return true;
+  getUserRoles(user: User): Object {
+    let userRoles: Object = {};
+    let userRolesArray: Array<Object> = Object.keys(user.userRole)
+      .filter((key) => user.userRole[key] === true)
+      .map((roles) => {
+        let userRoles = {};
+        userRoles[roles] = true;
+        return userRoles;
+      });
+
+    for (let i = 0; i < userRolesArray.length; i++) {
+      Object.assign(userRoles, userRolesArray[i]);
     }
-    throw new ForbiddenException();
+    return userRoles;
   }
 }

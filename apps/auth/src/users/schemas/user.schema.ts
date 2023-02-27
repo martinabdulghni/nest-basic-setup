@@ -1,7 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AbstractDocument } from '@app/common';
-import { UserStatus } from 'libs/types/status';
-
+import { UserAccountStatusType, UserConnectionStatus } from 'libs/types/user-status';
+import { CreateUserRequest } from '../dto/create-user.request';
+import { UserRoleType } from 'libs/types/roles';
+interface modifyHistory {
+  modified: CreateUserRequest;
+  modifiedDate: Date;
+}
 @Schema({ versionKey: false })
 export class User extends AbstractDocument {
   @Prop()
@@ -10,14 +15,32 @@ export class User extends AbstractDocument {
   @Prop()
   password: string;
 
-  @Prop()
-  isAdmin: boolean;
-
   @Prop({ type: String })
-  status: UserStatus;
+  userConnectionStatus: UserConnectionStatus;
+
+  @Prop({ type: Array })
+  userAccountStatus: Partial<UserAccountStatusType>;
 
   @Prop()
   lastLoggedIn: Date;
+
+  @Prop({ type: String })
+  image: string;
+
+  @Prop({ type: String })
+  name: string;
+
+  @Prop({ type: String })
+  description: string;
+
+  @Prop({ type: Date })
+  addedDate: Date;
+
+  @Prop({ type: Array })
+  userRole: Partial<UserRoleType>;
+
+  @Prop({ type: Array })
+  history: modifyHistory[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

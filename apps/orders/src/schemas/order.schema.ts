@@ -1,6 +1,6 @@
 import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { OrderStatus } from 'libs/types/status';
+import { OrderStatus } from 'libs/types/user-status';
 import { CreateOrderObjectRequest } from '../dto/create-order.request';
 
 @Schema({ versionKey: false })

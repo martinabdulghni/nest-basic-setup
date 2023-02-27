@@ -54,6 +54,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/items/tsconfig.app.json"
       }
+    },
+    "profile": {
+      "type": "application",
+      "root": "apps/profile",
+      "entryFile": "main",
+      "sourceRoot": "apps/profile/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/profile/tsconfig.app.json"
+      }
     }
   }
 }

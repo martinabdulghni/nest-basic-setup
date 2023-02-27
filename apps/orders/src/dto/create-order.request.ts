@@ -5,7 +5,7 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { OrderStatus } from 'libs/types/status';
+import { OrderStatus } from 'libs/types/user-status';
 import { ObjectId } from 'mongoose';
 
 export class CreateOrderRequest {

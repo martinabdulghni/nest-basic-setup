@@ -1,5 +1,6 @@
-import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { UserStatus } from 'libs/types/status';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { UserRoleType } from 'libs/types/roles';
+import { UserConnectionStatus, UserAccountStatusType } from 'libs/types/user-status';
 
 export class CreateUserRequest {
   @IsEmail()
@@ -10,9 +11,29 @@ export class CreateUserRequest {
   @IsNotEmpty()
   password: string;
 
-  isAdmin: boolean;
+  name: string;
+}
 
-  status: UserStatus;
+export class ModifyUserRequest {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 
-  lastLoggedIn: boolean;
+  password: string;
+
+  name: string;
+
+  userConnectionStatus: UserConnectionStatus;
+
+  userAccountStatus: Partial<UserAccountStatusType>;
+
+  lastLoggedIn: Date;
+
+  image: string;
+
+  description: string;
+
+  addedDate: Date;
+
+  userRole: Partial<UserRoleType>;
 }

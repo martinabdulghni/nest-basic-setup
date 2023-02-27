@@ -7,12 +7,20 @@ export enum OrderStatus {
   Completed = 80,
 }
 
-export enum UserStatus {
+export enum UserConnectionStatus {
   Online = 'Online',
   Offline = 'Offline',
   Busy = 'Busy',
   Away = 'Away',
 }
+
+export type UserAccountStatusType = {
+  isBanned: boolean;
+  isModified: boolean;
+  isTimedOut: boolean;
+  isWarned: boolean;
+  modifiedDate: Date | boolean;
+};
 export enum PaymentStatus {
   Pending = 40,
   failed = 60,

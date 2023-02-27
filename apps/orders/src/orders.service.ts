@@ -12,7 +12,7 @@ import { BILLING_SERVICE } from './constans/services';
 import { lastValueFrom } from 'rxjs';
 import { ItemRepository } from 'apps/items/src/items.repository';
 import { User } from 'apps/auth/src/users/schemas/user.schema';
-import { OrderStatus } from 'libs/types/status';
+import { OrderStatus } from 'libs/types/user-status';
 
 @Injectable()
 export class OrdersService {
@@ -77,64 +77,64 @@ export class OrdersService {
       throw new NotFoundException(`item with itemId: ${itemId} does not exist`);
     }
   }
-  async getOrder(id: string, user: User) {
-    try {
-      const order = await this.orderRepository.findOne({
-        _id: id,
-      });
-      if (user.isAdmin || order.userId === user._id.toString()) return order;
-      throw new ForbiddenException();
-    } catch (error) {
-      throw new NotFoundException(`No order with id: ${id} found`);
-    }
-  }
-  async modifyOrder(id: string, user: User, request: CreateOrderRequest) {
-    try {
-      const orderToModify = await this.orderRepository.findOne({
-        _id: id,
-      });
-      if (user.isAdmin || orderToModify.userId === user._id.toString()) {
-        const order = await this.orderRepository.findOneAndUpdate(
-          {
-            _id: id,
-          },
-          {
-            $currentDate: {
-              date: true,
-            },
-            $set: {
-              ...request,
-              oldValue: orderToModify,
-              isModified: true,
-            },
-          },
-        );
-        return order;
-      }
-      throw new ForbiddenException();
-    } catch (error) {
-      throw new NotFoundException(`No order with id: ${id} found`);
-    }
-  }
-  async getUserOrders(user: User) {
-    try {
-      const orders = await this.orderRepository.find({
-        userId: user._id.toString(),
-      });
-      if (orders) {
-        if (user._id.toString() === orders[0].userId) return orders;
-        throw new ForbiddenException();
-      }
-      throw new NotFoundException();
-    } catch (error) {
-      throw new NotFoundException();
-    }
-  }
+  // async getOrder(id: string, user: User) {
+  //   try {
+  //     const order = await this.orderRepository.findOne({
+  //       _id: id,
+  //     });
+  //     if (user.isAdmin || order.userId === user._id.toString()) return order;
+  //     throw new ForbiddenException();
+  //   } catch (error) {
+  //     throw new NotFoundException(`No order with id: ${id} found`);
+  //   }
+  // }
+  // async modifyOrder(id: string, user: User, request: CreateOrderRequest) {
+  //   try {
+  //     const orderToModify = await this.orderRepository.findOne({
+  //       _id: id,
+  //     });
+  //     if (user.isAdmin || orderToModify.userId === user._id.toString()) {
+  //       const order = await this.orderRepository.findOneAndUpdate(
+  //         {
+  //           _id: id,
+  //         },
+  //         {
+  //           $currentDate: {
+  //             date: true,
+  //           },
+  //           $set: {
+  //             ...request,
+  //             oldValue: orderToModify,
+  //             isModified: true,
+  //           },
+  //         },
+  //       );
+  //       return order;
+  //     }
+  //     throw new ForbiddenException();
+  //   } catch (error) {
+  //     throw new NotFoundException(`No order with id: ${id} found`);
+  //   }
+  // }
+  // async getUserOrders(user: User) {
+  //   try {
+  //     const orders = await this.orderRepository.find({
+  //       userId: user._id.toString(),
+  //     });
+  //     if (orders) {
+  //       if (user._id.toString() === orders[0].userId) return orders;
+  //       throw new ForbiddenException();
+  //     }
+  //     throw new NotFoundException();
+  //   } catch (error) {
+  //     throw new NotFoundException();
+  //   }
+  // }
 
-  async getOrders(user: User) {
-    if (user.isAdmin) {
-      return this.orderRepository.find({});
-    }
-    throw new ForbiddenException();
-  }
+  // async getOrders(user: User) {
+  //   if (user.isAdmin) {
+  //     return this.orderRepository.find({});
+  //   }
+  //   throw new ForbiddenException();
+  // }
 }

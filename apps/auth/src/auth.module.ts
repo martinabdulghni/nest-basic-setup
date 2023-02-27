@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { UsersRepository } from './users/users.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './users/schemas/user.schema';
+import { RolesAuthGuard } from '@app/common/auth/roles-auth.guard';
 
 @Module({
   imports: [
@@ -38,6 +39,6 @@ import { User, UserSchema } from './users/schemas/user.schema';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, UsersRepository],
+  providers: [AuthService, LocalStrategy, JwtStrategy, RolesAuthGuard, UsersRepository],
 })
 export class AuthModule {}
