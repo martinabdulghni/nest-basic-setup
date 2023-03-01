@@ -61,6 +61,13 @@ export class UserBasic extends AbstractDocument {
 
   @Prop({ type: String })
   description: string;
+
+  @Prop({ type: Date })
+  addedDate: Date;
+
+  @Prop({ type: Array })
+  userRole: Partial<UserRoleType>;
 }
+
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -16,25 +16,33 @@ import { Response } from 'express';
 export class ProfileService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async getProfile(request: Request): Promise<Object> {
-    const token: TokenPayload = await jwtDecode(request.cookies['Authentication']);
-    const id: string = token.userId;
+  /**
+   * Get Profile
+   *
+   * @async
+   * @param {Request} request
+   * @returns {Promise<UserBasic>}
+   * @api {Get}
+   */
+  async getProfile(request: Request): Promise<UserBasic> {
+    const user: UserBasic = await this.getUserFromTokenPayLoad(request);
 
-    try {
-      const user = await this.usersRepository.findOne({
-        _id: id,
-      });
-
-      if (!(user.userRole.Admin || user.userRole.SuperAdmin || user.userRole.SuperDeveloper || user.userRole.Super)) {
-        user.userRole = this.getUserRoles(user);
-      }
-      let { _id, history, password, userAccountStatus, lastLoggedIn, ...USER } = user;
-      return USER;
-    } catch (err) {
-      throw new BadRequestException(`No user to modify`);
+    if (!(user.userRole.Admin || user.userRole.SuperAdmin || user.userRole.SuperDeveloper || user.userRole.Super)) {
+      user.userRole = this.getUserRoles(user);
     }
+    return user;
   }
-  async modifyProfile(response: Response, request: Request, body: ModifyProfileRequest) {
+  /**
+   * Modify Profile
+   *
+   * @async
+   * @param {Response} response
+   * @param {Request} request
+   * @param {ModifyProfileRequest} body
+   * @api {Put}
+   * @returns {Promise<UserBasic>}
+   */
+  async modifyProfile(response: Response, request: Request, body: ModifyProfileRequest): Promise<UserBasic> {
     // else: throw new badRequest
     if (body !== undefined) {
       const isEmail = emailValidator.validate(body.email);
@@ -54,7 +62,7 @@ export class ProfileService {
         if (Object.values(validationStatus).every(Boolean) && Object.values(validationStatus).every((key) => key === true)) {
           await this.modifyValidUser(user, body);
           response.clearCookie('Authentication');
-          return HttpStatus.OK;
+          return user;
         } else {
           throw new BadRequestException(validationStatus);
         }
@@ -62,6 +70,15 @@ export class ProfileService {
     }
   }
 
+  /**
+   * Description placeholder
+   *
+   * @private
+   * @async
+   * @param {UserBasic} user
+   * @param {ModifyProfileRequest} body
+   * @returns {unknown}
+   */
   private async modifyValidUser(user: UserBasic, body: ModifyProfileRequest) {
     try {
       await this.usersRepository.findOneAndUpdate(
@@ -92,6 +109,15 @@ export class ProfileService {
     }
   }
 
+  /**
+   * Description placeholder
+   *
+   * @private
+   * @async
+   * @param {ModifyProfileRequest} body
+   * @param {UserBasic} user
+   * @returns {Promise<ValidationStatus>}
+   */
   private async validateBodyDataToModifyUser(body: ModifyProfileRequest, user: UserBasic): Promise<ValidationStatus> {
     // validation variables;
     let passwordCheck: UserModifiedStatusType = { isModified: false, isValid: false };
@@ -152,6 +178,14 @@ export class ProfileService {
     return result;
   }
 
+  /**
+   * Description placeholder
+   *
+   * @private
+   * @async
+   * @param {Request} request
+   * @returns {Promise<UserBasic>}
+   */
   private async getUserFromTokenPayLoad(request: Request): Promise<UserBasic> {
     const token: TokenPayload = jwtDecode(request.cookies['Authentication']);
     const id: string = token.userId;
@@ -160,13 +194,20 @@ export class ProfileService {
       const user = await this.usersRepository.findOne({
         _id: id,
       });
-      const { lastLoggedIn, addedDate, history, userRole, userAccountStatus, ...userBasic } = user;
+      const { lastLoggedIn, history, userAccountStatus, ...userBasic } = user;
       return userBasic;
     } catch (error) {
       throw new NotFoundException(`No User With ID: ${id}`);
     }
   }
 
+  /**
+   * Description placeholder
+   *
+   * @private
+   * @param {UserConnectionStatus} status
+   * @returns {boolean}
+   */
   private validateModifyUserConnectionStatus(status: UserConnectionStatus): boolean {
     if (status in UserConnectionStatus) {
       return true;
@@ -174,6 +215,14 @@ export class ProfileService {
     return false;
   }
 
+  /**
+   * Description placeholder
+   *
+   * @private
+   * @param {ModifyProfileRequest} body
+   * @param {UserBasic} user
+   * @returns {(boolean | any[])}
+   */
   private validateModifyUserPassword(body: ModifyProfileRequest, user: UserBasic): boolean | any[] {
     if (body.password == '') {
       return false;
@@ -195,14 +244,22 @@ export class ProfileService {
       .has()
       .lowercase() // Must have lowercase letters
       .has()
-      .digits(2) // Must have at least 2 digits
-      // .is()
-      // .not()
-      // .oneOf([currentPassword ? body.password : '']); // Blacklist these values
+      .digits(2); // Must have at least 2 digits
+    // .is()
+    // .not()
+    // .oneOf([currentPassword ? body.password : '']); // Blacklist these values
 
     return passwordSchema.validate(body.password) ? true : passwordSchema.validate(body.password, { details: true });
   }
 
+  /**
+   * Description placeholder
+   *
+   * @private
+   * @async
+   * @param {string} email
+   * @returns {Promise<boolean>}
+   */
   private async validateModifyUserEmail(email: string): Promise<boolean> {
     let user: User;
     try {
@@ -217,7 +274,14 @@ export class ProfileService {
     return true;
   }
 
-  private getUserRoles(user: User): Object {
+  /**
+   * Description placeholder
+   *
+   * @private
+   * @param {UserBasic} user
+   * @returns {Object}
+   */
+  private getUserRoles(user: UserBasic): Object {
     let userRoles: Object = {};
     let userRolesArray: Array<Object> = Object.keys(user.userRole)
       .filter((key) => user.userRole[key] === true)
@@ -233,6 +297,11 @@ export class ProfileService {
     return userRoles;
   }
 }
+/**
+ * Description placeholder
+ *
+ * @typedef {ValidationStatus}
+ */
 type ValidationStatus = {
   password: boolean | any[];
   connectionStatus: boolean;
