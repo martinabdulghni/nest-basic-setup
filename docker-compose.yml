@@ -32,7 +32,7 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-  
+
   items:
     build:
       context: .
@@ -49,6 +49,23 @@ services:
       - /usr/src/app/node_modules
     ports:
       - '3002:3002'
+      
+  profile:
+    build:
+      context: .
+      dockerfile: ./apps/profile/Dockerfile
+      target: development
+    command: npm run start:dev profile
+    env_file:
+      - apps/profile/.env
+    depends_on:
+      - auth
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3004:3004'
 
   auth:
     build:

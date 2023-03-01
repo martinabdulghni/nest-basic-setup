@@ -12,7 +12,12 @@ export enum UserConnectionStatus {
   Offline = 'Offline',
   Busy = 'Busy',
   Away = 'Away',
+  Empty = '',
 }
+export type UserModifiedStatusType = {
+  isModified: boolean;
+  isValid: boolean;
+};
 
 export type UserAccountStatusType = {
   isBanned: boolean;

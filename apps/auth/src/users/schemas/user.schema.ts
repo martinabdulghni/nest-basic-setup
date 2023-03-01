@@ -43,4 +43,24 @@ export class User extends AbstractDocument {
   history: modifyHistory[];
 }
 
+export class UserBasic extends AbstractDocument {
+  @Prop()
+  email: string;
+
+  @Prop()
+  password: string;
+
+  @Prop({ type: String })
+  userConnectionStatus: UserConnectionStatus;
+
+  @Prop({ type: String })
+  image: string;
+
+  @Prop({ type: String })
+  name: string;
+
+  @Prop({ type: String })
+  description: string;
+}
+
 export const UserSchema = SchemaFactory.createForClass(User);
