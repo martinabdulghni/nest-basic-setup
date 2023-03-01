@@ -15,11 +15,12 @@ export class OrdersController {
     return this.ordersService.createOrder(request, req.cookies?.Authentication, user);
   }
 
-  // @Get('all')
-  // @UseGuards(JwtAuthGuard)
-  // async getOrders(@CurrentUser() user: User) {
-  //   return this.ordersService.getOrders(user);
-  // }
+  @Get('all')
+  @UseGuards(JwtAuthGuard)
+  async getOrders(@CurrentUser() user: User) {
+    return user;
+    //return this.ordersService.getOrders(user);
+  }
   // @Get('order/:id')
   // @UseGuards(JwtAuthGuard)
   // async getOrder(@Param('id') id: string, @CurrentUser() user: User) {

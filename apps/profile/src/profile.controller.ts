@@ -6,41 +6,44 @@ import { Request } from 'express';
 import { UserRole } from 'libs/types/roles';
 import { ProfileService } from './profile.service';
 import { Response } from 'express';
-import { UserBasic } from 'apps/auth/src/users/schemas/user.schema';
+import { User, UserBasic } from 'apps/auth/src/users/schemas/user.schema';
+import { JwtAuthGuard } from '@app/common';
+import { CurrentUser } from 'apps/auth/src/current-user.decorator';
 
 @Controller('profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   /**
-   * Get Profile By Token Payload
+   * Get User Profile by Authentication Token
    *
    * @async
-   * @api {Get}
-   * @param {Request} request
-   * @returns {Promise<UserBasic>}
-   */
-  @Get()
-  @UseGuards(RolesAuthGuard)
-  @Roles(UserRole.User)
-  async getProfileByTokenPayLoad(@Req() request: Request): Promise<UserBasic> {
-    return await this.profileService.getProfile(request);
-  }
-
-  /**
-   * Modify User By Token Payload
-   *
-   * @async
-   * @param {Response} response
-   * @param {Request} request
-   * @param {ModifyProfileRequest} body
+   * @param {UserBasic} user
    * @returns {Promise<UserBasic>}
    * @api {Put}
    */
-  @Put()
+  @Get()
+  @UseGuards(JwtAuthGuard)
   @UseGuards(RolesAuthGuard)
   @Roles(UserRole.User)
-  async modifyUserByTokenLoad(@Res({ passthrough: true }) response: Response, @Req() request: Request, @Body() body: ModifyProfileRequest): Promise<UserBasic> {
-    return await this.profileService.modifyProfile(response, request, body);
+  async getProfile(@CurrentUser() user: User): Promise<UserBasic> {
+    return await this.profileService.getProfile(user);
+  }
+
+  /**
+   * Modify User Profile depends on @param {UserBasic}.
+   *
+   * @async
+   * @param {Response} response
+   * @param {UserBasic} user
+   * @param {ModifyProfileRequest} body
+   * @returns {Promise<UserBasic>}
+   */
+  @Put()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RolesAuthGuard)
+  @Roles(UserRole.User)
+  async modifyUserByTokenLoad(@Res({ passthrough: true }) response: Response, @CurrentUser() user: User, @Body() body: ModifyProfileRequest): Promise<UserBasic> {
+    return await this.profileService.modifyProfile(response, user, body);
   }
 }

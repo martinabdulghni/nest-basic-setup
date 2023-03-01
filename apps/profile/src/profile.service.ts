@@ -16,33 +16,35 @@ import { Response } from 'express';
 export class ProfileService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
+  private user: UserBasic;
   /**
-   * Get Profile
+   * Get User Profile
    *
    * @async
-   * @param {Request} request
+   * @param {UserBasic} user
    * @returns {Promise<UserBasic>}
-   * @api {Get}
    */
-  async getProfile(request: Request): Promise<UserBasic> {
-    const user: UserBasic = await this.getUserFromTokenPayLoad(request);
-
-    if (!(user.userRole.Admin || user.userRole.SuperAdmin || user.userRole.SuperDeveloper || user.userRole.Super)) {
-      user.userRole = this.getUserRoles(user);
+  async getProfile(user: User): Promise<UserBasic> {
+    this.user = user;
+    if (!(this.user.userRole.Admin || this.user.userRole.SuperAdmin || this.user.userRole.SuperDeveloper || this.user.userRole.Super)) {
+      this.user.userRole = this.getUserRoles(this.user);
     }
-    return user;
+    const { userAccountStatus, history, lastLoggedIn, ...userBasic } = user;
+    this.user = userBasic;
+    return this.user;
   }
+
   /**
-   * Modify Profile
+   * Modify User Profile
    *
    * @async
    * @param {Response} response
-   * @param {Request} request
+   * @param {UserBasic} user
    * @param {ModifyProfileRequest} body
-   * @api {Put}
    * @returns {Promise<UserBasic>}
    */
-  async modifyProfile(response: Response, request: Request, body: ModifyProfileRequest): Promise<UserBasic> {
+  async modifyProfile(response: Response, user: User, body: ModifyProfileRequest): Promise<UserBasic> {
+    this.user = user;
     // else: throw new badRequest
     if (body !== undefined) {
       const isEmail = emailValidator.validate(body.email);
@@ -50,7 +52,6 @@ export class ProfileService {
 
       if (isEmail) {
         // UserBasic: Only spcific data to see
-        const user: UserBasic = await this.getUserFromTokenPayLoad(request);
 
         if (Object.keys(body).length === 1 && Object.keys(body)[0] === 'email' && user.email === body.email) {
           throw new BadRequestException('Nothing To Modify');
@@ -62,7 +63,12 @@ export class ProfileService {
         if (Object.values(validationStatus).every(Boolean) && Object.values(validationStatus).every((key) => key === true)) {
           await this.modifyValidUser(user, body);
           response.clearCookie('Authentication');
-          return user;
+          if (!(this.user.userRole.Admin || this.user.userRole.SuperAdmin || this.user.userRole.SuperDeveloper || this.user.userRole.Super)) {
+            this.user.userRole = this.getUserRoles(this.user);
+          }
+          const { userAccountStatus, history, lastLoggedIn, ...userBasic } = user;
+          this.user = userBasic;
+          return this.user;
         } else {
           throw new BadRequestException(validationStatus);
         }
@@ -176,29 +182,6 @@ export class ProfileService {
     };
 
     return result;
-  }
-
-  /**
-   * Description placeholder
-   *
-   * @private
-   * @async
-   * @param {Request} request
-   * @returns {Promise<UserBasic>}
-   */
-  private async getUserFromTokenPayLoad(request: Request): Promise<UserBasic> {
-    const token: TokenPayload = jwtDecode(request.cookies['Authentication']);
-    const id: string = token.userId;
-
-    try {
-      const user = await this.usersRepository.findOne({
-        _id: id,
-      });
-      const { lastLoggedIn, history, userAccountStatus, ...userBasic } = user;
-      return userBasic;
-    } catch (error) {
-      throw new NotFoundException(`No User With ID: ${id}`);
-    }
   }
 
   /**
