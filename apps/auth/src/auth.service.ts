@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
@@ -17,6 +17,7 @@ export class AuthService {
   constructor(private readonly usersRepository: UsersRepository, private readonly configService: ConfigService, private readonly jwtService: JwtService) {}
 
   async login(user: User, response: Response) {
+
     let userRoles = this.getUserRoles(user);
     const tokenPayload: TokenPayload = {
       userId: user._id.toString(),
@@ -41,7 +42,7 @@ export class AuthService {
         {
           $set: {
             userConnectionStatus: UserConnectionStatus.Online,
-            lastLoggedIn: new Date(), 
+            lastLoggedIn: new Date(),
           },
         },
       );

@@ -33,6 +33,7 @@ export class UsersService {
         SuperUser: false,
         User: true,
       },
+      userOrders: [],
     });
     return { status: HttpStatus.OK, userId: user._id };
   }

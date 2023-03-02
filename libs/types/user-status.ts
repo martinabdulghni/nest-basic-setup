@@ -1,6 +1,7 @@
 // Stauts logic increases by 20 for each status.
 
 export enum OrderStatus {
+  New = 10,
   Open = 20,
   Pending = 40,
   Cancelled = 60,

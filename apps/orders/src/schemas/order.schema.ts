@@ -1,20 +1,25 @@
 import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { OrderStatus } from 'libs/types/user-status';
-import { CreateOrderObjectRequest } from '../dto/create-order.request';
+import { CreateOrderObject, OrderItemObject } from '../dto/create-order.request';
 
 @Schema({ versionKey: false })
 export class Order extends AbstractDocument {
   @Prop()
-  items: CreateOrderObjectRequest[];
-  @Prop()
   userId: string;
+
   @Prop()
-  date: Date;
+  items: OrderItemObject[];
+
   @Prop({ type: String })
   status: OrderStatus;
+
+  @Prop()
+  date: Date;
+
   @Prop({ type: Boolean })
   isModified: boolean;
+
   @Prop({ type: Object })
   oldValue: {};
 }

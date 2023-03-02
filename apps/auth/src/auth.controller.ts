@@ -1,4 +1,4 @@
-import { Controller, ForbiddenException, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, ForbiddenException, Post, Req, Res, SetMetadata, UseGuards } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
@@ -10,6 +10,9 @@ import { Request } from 'express';
 import { RolesAuthGuard } from '@app/common/auth/roles-auth.guard';
 import { UserRole } from 'libs/types/roles';
 import { Roles } from './roles.decorator';
+import { AllowanceType } from 'libs/types/allowance';
+import { AllowancesAuth } from '@app/common/auth/allowances-auth.guard';
+import { Allowances } from './Allowance.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +20,10 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @UseGuards(AllowancesAuth)
+  @Allowances({
+    isAuthenticated: true,
+  })
   async login(@CurrentUser() user: User, @Res({ passthrough: true }) response: Response) {
     return await this.authService.login(user, response);
   }

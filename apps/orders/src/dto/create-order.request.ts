@@ -1,18 +1,11 @@
-import {
-  IsArray,
-  IsDate,
-  IsNotEmpty,
-  IsPositive,
-  IsString,
-} from 'class-validator';
+import { IsArray, IsDate, IsNotEmpty, IsPositive, IsString } from 'class-validator';
 import { OrderStatus } from 'libs/types/user-status';
-import { ObjectId } from 'mongoose';
 
-export class CreateOrderRequest {
+export class OrderItemArray {
   @IsArray()
-  items: CreateOrderObjectRequest[];
+  items: OrderItemObject[];
 }
-export class CreateOrderObjectRequest {
+export class OrderItemObject {
   @IsString()
   @IsNotEmpty()
   itemId: string;
@@ -30,4 +23,14 @@ export class CreateOrderObjectRequest {
 
   @IsNotEmpty()
   status: OrderStatus;
+  
+}
+
+export class CreateOrderObject {
+  userId: string;
+  items: OrderItemObject[];
+  status: OrderStatus;
+  date: Date;
+  isModified: boolean;
+  oldValue: Object;
 }

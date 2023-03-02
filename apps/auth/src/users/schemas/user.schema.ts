@@ -3,6 +3,7 @@ import { AbstractDocument } from '@app/common';
 import { UserAccountStatusType, UserConnectionStatus } from 'libs/types/user-status';
 import { CreateUserRequest } from '../dto/create-user.request';
 import { UserRoleType } from 'libs/types/roles';
+import { OrderItemArray, OrderItemObject } from 'apps/orders/src/dto/create-order.request';
 interface modifyHistory {
   modified: CreateUserRequest;
   modifiedDate: Date;
@@ -41,6 +42,9 @@ export class User extends AbstractDocument {
 
   @Prop({ type: Array })
   history: modifyHistory[];
+
+  @Prop()
+  userOrders: OrderItemArray[];
 }
 
 export class UserBasic extends AbstractDocument {
@@ -67,6 +71,12 @@ export class UserBasic extends AbstractDocument {
 
   @Prop({ type: Array })
   userRole: Partial<UserRoleType>;
+
+  @Prop()
+  userOrders: OrderItemArray[];
+
+  @Prop({ type: Array })
+  userAccountStatus: Partial<UserAccountStatusType>;
 }
 
 
