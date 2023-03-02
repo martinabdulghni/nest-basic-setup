@@ -12,7 +12,8 @@ export class AllowancesAuth implements CanActivate {
 
     //! LOGIN ACTION
     if (ACTION_NAME === 'login') {
-      if (ACCESS_KEYS.isAuthenticated) {
+      // Should not be authenticated.
+      if (!ACCESS_KEYS.isAuthenticated) {
         let request: string;
         if (context.getType() === 'http') {
           request = await context.switchToHttp().getRequest().cookies['Authentication'];

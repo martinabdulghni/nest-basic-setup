@@ -4,14 +4,13 @@ import { CreateOrderObject, OrderItemArray } from './dto/create-order.request';
 import { OrdersRepository } from './orders.repository';
 import { BILLING_SERVICE } from './constans/services';
 import { lastValueFrom } from 'rxjs';
-import { ItemRepository } from 'apps/items/src/items.repository';
 import { User } from 'apps/auth/src/users/schemas/user.schema';
 import { OrderStatus } from 'libs/types/user-status';
 import { ClientSession } from 'mongoose';
 
 @Injectable()
 export class OrdersService {
-  constructor(private readonly orderRepository: OrdersRepository, @Inject(BILLING_SERVICE) private billingClient: ClientProxy, private readonly itemRepository: ItemRepository) {}
+  constructor(private readonly orderRepository: OrdersRepository, @Inject(BILLING_SERVICE) private billingClient: ClientProxy) {}
 
   async createOrder(body: OrderItemArray, user: User, authentication: string) {
     const session: ClientSession = await this.orderRepository.startTransaction();
@@ -85,7 +84,7 @@ export class OrdersService {
     };
   }
 
-  //TODO
+  //TODO: When order status is "pending" -> send to billing.
   private async insertToBilling(authentication: string, orderId: string) {
     await lastValueFrom(
       this.billingClient.emit('order_created', {

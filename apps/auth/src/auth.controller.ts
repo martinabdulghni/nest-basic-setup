@@ -10,7 +10,6 @@ import { Request } from 'express';
 import { RolesAuthGuard } from '@app/common/auth/roles-auth.guard';
 import { UserRole } from 'libs/types/roles';
 import { Roles } from './roles.decorator';
-import { AllowanceType } from 'libs/types/allowance';
 import { AllowancesAuth } from '@app/common/auth/allowances-auth.guard';
 import { Allowances } from './Allowance.decorator';
 
@@ -22,7 +21,7 @@ export class AuthController {
   @Post('login')
   @UseGuards(AllowancesAuth)
   @Allowances({
-    isAuthenticated: true,
+    isAuthenticated: false,
   })
   async login(@CurrentUser() user: User, @Res({ passthrough: true }) response: Response) {
     return await this.authService.login(user, response);
