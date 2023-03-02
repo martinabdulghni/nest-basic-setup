@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateOrderObject, OrderItemArray } from './dto/create-order.request';
 import { OrdersRepository } from './orders.repository';
@@ -82,6 +82,20 @@ export class OrdersService {
       isModified: false,
       oldValue: {},
     };
+  }
+
+  async deleteOrder(id: string) {
+    try {
+      await this.orderRepository.findOne({
+        _id: id,
+      });
+      await this.orderRepository.findOneAndDelete({
+        _id: id,
+      });
+      return HttpStatus.OK;
+    } catch (error) {
+      throw new BadRequestException('Couldnt find order');
+    }
   }
 
   //TODO: When order status is "pending" -> send to billing.

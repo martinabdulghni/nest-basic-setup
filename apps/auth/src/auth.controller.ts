@@ -1,4 +1,4 @@
-import { Controller, ForbiddenException, Post, Req, Res, SetMetadata, UseGuards } from '@nestjs/common';
+import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
@@ -11,7 +11,7 @@ import { RolesAuthGuard } from '@app/common/auth/roles-auth.guard';
 import { UserRole } from 'libs/types/roles';
 import { Roles } from './roles.decorator';
 import { AllowancesAuth } from '@app/common/auth/allowances-auth.guard';
-import { Allowances } from './Allowance.decorator';
+import { Allowances } from './allowance.decorator';
 
 @Controller('auth')
 export class AuthController {

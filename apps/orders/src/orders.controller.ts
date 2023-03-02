@@ -18,7 +18,7 @@ export class OrdersController {
   @UseGuards(RolesAuthGuard)
   @Roles(UserRole.User)
   async createOrder(@Body() body: OrderItemArray, @Req() req: Request, @CurrentUser() user: User) {
-    return this.ordersService.createOrder(body, user, req.cookies?.Authentication);
+    return await this.ordersService.createOrder(body, user, req.cookies?.Authentication);
   }
 
   @Get('all')
@@ -26,21 +26,29 @@ export class OrdersController {
   @UseGuards(RolesAuthGuard)
   @Roles(UserRole.Super, UserRole.SuperAdmin, UserRole.Admin)
   async getOrders() {
-    return this.ordersService.getOrders();
+    return await this.ordersService.getOrders();
   }
-  @Get('order/:id')
+  @Get(':id')
   @UseGuards(JwtAuthGuard)
   @UseGuards(RolesAuthGuard)
   @Roles(UserRole.Super, UserRole.SuperAdmin, UserRole.Admin)
   async getOrder(@Param('id') id: string) {
-    return this.ordersService.getOrder(id);
+    return await this.ordersService.getOrder(id);
   }
 
-  @Put('order/:id')
+  @Put(':id')
   @UseGuards(JwtAuthGuard)
   @UseGuards(RolesAuthGuard)
   @Roles(UserRole.Super, UserRole.SuperAdmin, UserRole.Admin)
   async modifyOrder(@Param('id') id: string, @Body() request: OrderItemArray) {
-    return this.ordersService.modifyOrder(id, request);
+    return await this.ordersService.modifyOrder(id, request);
+  }
+
+  @Delete('order/:id')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RolesAuthGuard)
+  @Roles(UserRole.Super, UserRole.SuperAdmin)
+  async deleteOrder(@Param('id') id: string) {
+    return await this.ordersService.deleteOrder(id);
   }
 }
