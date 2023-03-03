@@ -4,7 +4,7 @@ import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Req, UseGuards
 import { CurrentUser } from 'apps/auth/src/current-user.decorator';
 import { Roles } from 'apps/auth/src/roles.decorator';
 import { User } from 'apps/auth/src/users/schemas/user.schema';
-import { UserRole } from 'libs/types/roles';
+import { UserRole } from 'libs/types/user-status';
 import { CreateItemRequest } from './dto/create-item.request';
 import { ItemsService } from './items.service';
 

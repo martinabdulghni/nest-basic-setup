@@ -5,7 +5,7 @@ import { CurrentUser } from 'apps/auth/src/current-user.decorator';
 import { Roles } from 'apps/auth/src/roles.decorator';
 import { User } from 'apps/auth/src/users/schemas/user.schema';
 import { Request } from 'express';
-import { UserRole } from 'libs/types/roles';
+import { UserRole } from 'libs/types/user-status';
 import { OrderItemArray } from './dto/create-order.request';
 import { OrdersService } from './orders.service';
 

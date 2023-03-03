@@ -11,30 +11,8 @@ export class UsersService {
 
   async createUser(request: CreateUserRequest) {
     await this.validateCreateUserRequest(request);
-    const user = await this.usersRepository.create({
-      ...request,
-      lastLoggedIn: new Date(),
-      userConnectionStatus: UserConnectionStatus.Online,
-      password: await bcrypt.hash(request.password, 10),
-      addedDate: new Date(),
-      description: '',
-      history: [],
-      image: '',
-      userAccountStatus: { isBanned: false, isModified: false, isTimedOut: false, isWarned: false, modifiedDate: false },
-      userRole: {
-        Super: false,
-        SuperAdmin: false,
-        Admin: false,
-        SuperSupport: false,
-        Support: false,
-        SuperDeveloper: false,
-        SuperEconomic: false,
-        Economic: false,
-        SuperUser: false,
-        User: true,
-      },
-      userOrders: [],
-    });
+    const createUserObject = await this.createUserObject(request);
+    const user = await this.usersRepository.create(createUserObject);
     return { status: HttpStatus.OK, userId: user._id };
   }
 
@@ -85,14 +63,14 @@ export class UsersService {
         },
         {
           $set: {
-            password: body.password ? await bcrypt.hash(body.password, 10) : userToModify.password,
             ...body,
+            password: body.password ? await bcrypt.hash(body.password, 10) : userToModify.password,
             userAccountStatus: {
               isBanned: body.userAccountStatus.isBanned ? body.userAccountStatus.isBanned : userToModify.userAccountStatus.isBanned,
               isModified: body.userAccountStatus.isModified ? body.userAccountStatus.isModified : userToModify.userAccountStatus.isModified,
               isTimedOut: body.userAccountStatus.isTimedOut ? body.userAccountStatus.isTimedOut : userToModify.userAccountStatus.isTimedOut,
               isWarned: body.userAccountStatus.isWarned ? body.userAccountStatus.isWarned : userToModify.userAccountStatus.isWarned,
-              modifiedDate: body.userAccountStatus.modifiedDate ? body.userAccountStatus.modifiedDate : userToModify.userAccountStatus.modifiedDate,
+              modifiedDate: new Date(),
             },
           },
           $currentDate: {
@@ -138,5 +116,32 @@ export class UsersService {
     } catch (error) {
       throw new NotFoundException(`No Users`);
     }
+  }
+
+  async createUserObject(request: CreateUserRequest) {
+    return {
+      ...request,
+      lastLoggedIn: new Date(),
+      userConnectionStatus: UserConnectionStatus.Online,
+      password: await bcrypt.hash(request.password, 10),
+      addedDate: new Date(),
+      description: '',
+      history: [],
+      image: '',
+      userAccountStatus: { isBanned: false, isModified: false, isTimedOut: false, isWarned: false, modifiedDate: false },
+      userRole: {
+        Super: false,
+        SuperAdmin: false,
+        Admin: false,
+        SuperSupport: false,
+        Support: false,
+        SuperDeveloper: false,
+        SuperEconomic: false,
+        Economic: false,
+        SuperUser: false,
+        User: true,
+      },
+      userOrders: [],
+    };
   }
 }

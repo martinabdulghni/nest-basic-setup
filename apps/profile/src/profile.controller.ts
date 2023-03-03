@@ -3,12 +3,12 @@ import { Body, Controller, Get, Param, Put, Req, Res, UseGuards } from '@nestjs/
 import { Roles } from 'apps/auth/src/roles.decorator';
 import { CreateUserRequest, ModifyProfileRequest, ModifyUserRequest } from 'apps/auth/src/users/dto/create-user.request';
 import { Request } from 'express';
-import { UserRole } from 'libs/types/roles';
 import { ProfileService } from './profile.service';
 import { Response } from 'express';
 import { User, UserBasic } from 'apps/auth/src/users/schemas/user.schema';
 import { JwtAuthGuard } from '@app/common';
 import { CurrentUser } from 'apps/auth/src/current-user.decorator';
+import { UserRole } from 'libs/types/user-status';
 
 @Controller('profile')
 export class ProfileController {

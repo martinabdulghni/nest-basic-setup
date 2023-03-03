@@ -8,10 +8,10 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { User } from './users/schemas/user.schema';
 import { Request } from 'express';
 import { RolesAuthGuard } from '@app/common/auth/roles-auth.guard';
-import { UserRole } from 'libs/types/roles';
 import { Roles } from './roles.decorator';
 import { AllowancesAuth } from '@app/common/auth/allowances-auth.guard';
 import { Allowances } from './allowance.decorator';
+import { UserRole } from 'libs/types/user-status';
 
 @Controller('auth')
 export class AuthController {

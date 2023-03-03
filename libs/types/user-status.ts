@@ -1,13 +1,3 @@
-// Stauts logic increases by 20 for each status.
-
-export enum OrderStatus {
-  New = 10,
-  Open = 20,
-  Pending = 40,
-  Cancelled = 60,
-  Completed = 80,
-}
-
 export enum UserConnectionStatus {
   Online = 'Online',
   Offline = 'Offline',
@@ -27,11 +17,34 @@ export type UserAccountStatusType = {
   isWarned: boolean;
   modifiedDate: Date | boolean;
 };
-export enum PaymentStatus {
-  Pending = 40,
-  failed = 60,
-  success = 80,
-  refunding = 90,
-  refunded = 91,
+
+export enum UserRole {
+  Super = 'Super',
+  SuperAdmin = 'SuperAdmin',
+  Admin = 'Admin',
+  SuperSupport = 'SuperSupport',
+  Support = 'Support',
+  SuperDeveloper = 'SuperDeveloper',
+  SuperEconomic = 'SuperEconomic',
+  Economic = 'Economic',
+  SuperUser = 'SuperUser',
+  User = 'User',
 }
-export enum DeliveryStatus {}
+
+export type UserRoleType = {
+  Super?: boolean;
+  SuperAdmin?: boolean;
+  Admin?: boolean;
+  SuperSupport?: boolean;
+  Support?: boolean;
+  SuperDeveloper?: boolean;
+  SuperEconomic?: boolean;
+  Economic?: boolean;
+  SuperUser?: boolean;
+  User?: boolean;
+};
+
+export type UserPaymentStatus = {
+  payments: number;
+  lastTransactionDate: Date;
+};

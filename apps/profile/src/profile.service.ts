@@ -92,7 +92,7 @@ export class ProfileService {
             this.user.userRole = this.getUserRoles(this.user);
           }
           if (!(this.user.userRole.Admin || this.user.userRole.SuperAdmin || this.user.userRole.SuperDeveloper || this.user.userRole.Super)) {
-            this.user.userRole = this.getUserAccountStatus(this.user);
+            this.user.userAccountStatus = this.getUserAccountStatus(this.user);
           }
           const { history, lastLoggedIn, ...userBasic } = user;
           this.user = userBasic;

@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AbstractDocument } from '@app/common';
-import { UserAccountStatusType, UserConnectionStatus } from 'libs/types/user-status';
+import { UserAccountStatusType, UserConnectionStatus, UserRoleType } from 'libs/types/user-status';
 import { CreateUserRequest } from '../dto/create-user.request';
-import { UserRoleType } from 'libs/types/roles';
 import { OrderItemArray, OrderItemObject } from 'apps/orders/src/dto/create-order.request';
 interface modifyHistory {
   modified: CreateUserRequest;

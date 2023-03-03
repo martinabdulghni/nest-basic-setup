@@ -5,8 +5,8 @@ import { OrdersRepository } from './orders.repository';
 import { BILLING_SERVICE } from './constans/services';
 import { lastValueFrom } from 'rxjs';
 import { User } from 'apps/auth/src/users/schemas/user.schema';
-import { OrderStatus } from 'libs/types/user-status';
 import { ClientSession } from 'mongoose';
+import { OrderStatus } from 'libs/types/todo-status';
 
 @Injectable()
 export class OrdersService {

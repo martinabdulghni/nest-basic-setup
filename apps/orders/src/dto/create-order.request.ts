@@ -1,5 +1,5 @@
 import { IsArray, IsDate, IsNotEmpty, IsPositive, IsString } from 'class-validator';
-import { OrderStatus } from 'libs/types/user-status';
+import { OrderStatus } from 'libs/types/todo-status';
 
 export class OrderItemArray {
   @IsArray()
@@ -23,7 +23,6 @@ export class OrderItemObject {
 
   @IsNotEmpty()
   status: OrderStatus;
-  
 }
 
 export class CreateOrderObject {

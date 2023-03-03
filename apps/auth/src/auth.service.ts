@@ -2,8 +2,7 @@ import { ForbiddenException, HttpStatus, Injectable, NotFoundException } from '@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
-import { UserRoleType } from 'libs/types/roles';
-import { UserConnectionStatus } from 'libs/types/user-status';
+import { UserConnectionStatus, UserRoleType } from 'libs/types/user-status';
 import { User } from './users/schemas/user.schema';
 import { UsersRepository } from './users/users.repository';
 
@@ -17,7 +16,6 @@ export class AuthService {
   constructor(private readonly usersRepository: UsersRepository, private readonly configService: ConfigService, private readonly jwtService: JwtService) {}
 
   async login(user: User, response: Response) {
-
     let userRoles = this.getUserRoles(user);
     const tokenPayload: TokenPayload = {
       userId: user._id.toString(),

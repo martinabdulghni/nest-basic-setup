@@ -1,6 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { UserRoleType } from 'libs/types/roles';
-import { UserConnectionStatus, UserAccountStatusType } from 'libs/types/user-status';
+import { UserConnectionStatus, UserAccountStatusType, UserRoleType } from 'libs/types/user-status';
 
 export class CreateUserRequest {
   @IsEmail()
