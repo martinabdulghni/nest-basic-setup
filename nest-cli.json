@@ -63,6 +63,42 @@
       "compilerOptions": {
         "tsConfigPath": "apps/profile/tsconfig.app.json"
       }
+    },
+    "accounting": {
+      "type": "application",
+      "root": "apps/accounting",
+      "entryFile": "main",
+      "sourceRoot": "apps/accounting/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/accounting/tsconfig.app.json"
+      }
+    },
+    "project": {
+      "type": "application",
+      "root": "apps/project",
+      "entryFile": "main",
+      "sourceRoot": "apps/project/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/project/tsconfig.app.json"
+      }
+    },
+    "delete": {
+      "type": "application",
+      "root": "apps/delete",
+      "entryFile": "main",
+      "sourceRoot": "apps/delete/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/delete/tsconfig.app.json"
+      }
+    },
+    "job": {
+      "type": "application",
+      "root": "apps/job",
+      "entryFile": "main",
+      "sourceRoot": "apps/job/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/job/tsconfig.app.json"
+      }
     }
   }
 }
