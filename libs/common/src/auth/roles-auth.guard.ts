@@ -12,25 +12,26 @@ export class RolesAuthGuard implements CanActivate {
     if (!roles) {
       return true;
     }
-    try {
-      let request: string;
-      if (context.getType() === 'http') {
-        request = await context.switchToHttp().getRequest().cookies['Authentication'];
-      }
-      if (context.getType() === 'rpc') {
-        request = await context.switchToRpc().getData().cookies['Authentication'];
-      }
-      const userRole: Partial<UserRoleType> = await jwtDecode(request)['userRole'];
 
+    let request: string;
+    if (context.getType() === 'http') {
+      request = await context.switchToHttp().getRequest().cookies['Authentication'];
+    }
+    if (context.getType() === 'rpc') {
+      request = context.switchToRpc().getData()['Authentication'];
+    }
+
+    try {
+      const userRole: Partial<UserRoleType> = await jwtDecode(request)['userRole'];
       let canAccess: boolean = false;
       for (const role of roles) {
         if (userRole[role]) {
           canAccess = true;
         }
       }
-      return canAccess ? true : false;
+      return canAccess;
     } catch (error) {
-      throw new UnauthorizedException('Token unvaild');
+      throw new UnauthorizedException('No Token Was Provided')
     }
   }
 }

@@ -13,12 +13,12 @@ import { OrdersService } from './orders.service';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Post()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RolesAuthGuard)
   @Roles(UserRole.User)
+  @Post()
   async createOrder(@Body() body: OrderItemArray, @Req() req: Request, @CurrentUser() user: User) {
-    return await this.ordersService.createOrder(body, user, req.cookies?.Authentication);
+    return await this.ordersService.createOrder(body, user, req);
   }
 
   @Get('all')

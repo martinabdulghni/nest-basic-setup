@@ -2,27 +2,49 @@ import { BadRequestException, HttpStatus, Inject, Injectable, NotFoundException 
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateOrderObject, OrderItemArray } from './dto/create-order.request';
 import { OrdersRepository } from './orders.repository';
-import { BILLING_SERVICE } from './constans/services';
+import { BILLING_SERVICE, MAIL_SERVICE } from './constans/services';
 import { lastValueFrom } from 'rxjs';
 import { User } from 'apps/auth/src/users/schemas/user.schema';
 import { ClientSession } from 'mongoose';
 import { OrderStatus } from 'libs/types/todo-status';
+import { Request } from 'express';
+import { Order } from './schemas/order.schema';
+import { ItemRepository } from 'apps/items/src/items.repository';
+import { Items } from 'apps/items/src/schemas/items.schema';
 
 @Injectable()
 export class OrdersService {
-  constructor(private readonly orderRepository: OrdersRepository, @Inject(BILLING_SERVICE) private billingClient: ClientProxy) {}
+  constructor(
+    private readonly orderRepository: OrdersRepository,
+    private readonly itemRepository: ItemRepository,
+    @Inject(BILLING_SERVICE) private billingClient: ClientProxy,
+    @Inject(MAIL_SERVICE) private mailClient: ClientProxy,
+  ) {}
 
-  async createOrder(body: OrderItemArray, user: User, authentication: string) {
+  async createOrder(body: OrderItemArray, user: User, req: Request) {
+    const token = req.cookies.Authentication;
     const session: ClientSession = await this.orderRepository.startTransaction();
     const order: CreateOrderObject = this.createOrderObject(body, user);
 
-    console.log(order);
-
     try {
-      await this.orderRepository.create(order, {
+      const newOrder: Order = await this.orderRepository.create(order, {
         session,
         timestamps: true,
       });
+
+      try {
+        let itemsArray = [];
+        for (const item of newOrder.items) {
+          const getItem = await this.itemRepository.findOne({ _id: item.itemId });
+          let { _id, history, modifiedDate, isModified, isPublished, quantity, addedDate, addedBy, ...ITEM } = getItem;
+          itemsArray.push(ITEM);
+        }
+
+        newOrder.items = itemsArray;
+        await this.callMailService(token, newOrder);
+      } catch (error) {
+        throw new NotFoundException('item not found.');
+      }
 
       await session.commitTransaction();
     } catch (error) {
@@ -104,6 +126,14 @@ export class OrdersService {
       this.billingClient.emit('order_created', {
         Authentication: authentication,
         orderId: orderId,
+      }),
+    );
+  }
+  private async callMailService(authentication: string, order: Order) {
+    return await lastValueFrom(
+      this.mailClient.emit('send_mail', {
+        Authentication: authentication,
+        order: order,
       }),
     );
   }
