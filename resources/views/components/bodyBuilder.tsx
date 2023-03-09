@@ -1,45 +1,38 @@
-import { MjmlColumn, MjmlSection } from "@faire/mjml-react";
-import { MailmanButton } from "./button";
-import { MailmanDivider } from "./divider";
-import { Greeting } from "./greeting";
-import { TextLine } from "./text";
-import React from "react";
-import { MailmanTable } from "./table";
+import { MailmanButton } from './button';
+import { MailmanDivider } from './divider';
+import { Greeting } from './greeting';
+import { TextLine } from './text';
+import { MjmlColumn, MjmlSection } from '@faire/mjml-react';
+import { MailmanTable } from './table';
 
 export const MailmanBodyBuilder = (payload: Record<string, any>) => {
   return (
     <MjmlSection backgroundColor="#ffffff">
       <MjmlSection padding={0}>
         <MjmlColumn>
-          {payload.fields.map((obj) => {
-            return ComponentView(obj);
+          {payload.fields.map((obj: { greeting: any; line: any; divider: any; action: any; table: any }) => {
+            if (obj.greeting) {
+              return <Greeting value={obj.greeting.toString()} key={obj.greeting} />;
+            }
+
+            if (obj.line) {
+              return <TextLine value={obj.line} key={obj.line.toString()} />;
+            }
+
+            if (obj.divider) {
+              return <MailmanDivider key={obj.divider.toString()} />;
+            }
+
+            if (obj.action) {
+              return <MailmanButton value={obj.action} key={obj.action.toString()} />;
+            }
+
+            if (obj.table) {
+              return <MailmanTable value={obj.table} key={obj.table.toString()} />;
+            }
           })}
         </MjmlColumn>
       </MjmlSection>
     </MjmlSection>
   );
-};
-
-const ComponentView = (payload: Record<string, any>) => {
-  if (payload.greeting) {
-    return <Greeting value={payload.greeting} />;
-  }
-
-  if (payload.line) {
-    return <TextLine value={payload.line} />;
-  }
-
-  if (payload.divider) {
-    return <MailmanDivider />;
-  }
-
-  if (payload.action) {
-    return <MailmanButton value={payload.action} />;
-  }
-
-  if (payload.table) {
-    return <MailmanTable value={payload.table} />;
-  }
-
-  return <></>;
 };

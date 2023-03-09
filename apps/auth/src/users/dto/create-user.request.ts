@@ -30,7 +30,7 @@ export class ModifyUserRequest {
 
   image: string;
 
-  description: string;
+  desc: string;
 
   addedDate: Date;
 
@@ -47,7 +47,7 @@ export class ModifyProfileRequest {
 
   image: string;
 
-  description: string;
+  desc: string;
   userConnectionStatus: UserConnectionStatus;
 }
 

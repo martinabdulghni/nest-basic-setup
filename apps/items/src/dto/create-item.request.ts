@@ -7,7 +7,7 @@ export class CreateItemRequest {
 
   @IsString()
   @IsNotEmpty()
-  description: string;
+  desc: string;
 
   @IsPositive()
   price: number;
@@ -25,7 +25,7 @@ export class CreateItemRequest {
 
 export class CreateItemObject {
   name: string;
-  description: string;
+  desc: string;
   price: number;
   quantity: number;
   image: string;

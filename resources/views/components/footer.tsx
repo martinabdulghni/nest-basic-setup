@@ -11,22 +11,6 @@ export const MailmanFooter = (payload: Record<string, any>) => {
     <>
       <MjmlWrapper className="footer">
         <MjmlSection padding={0}>
-          <MjmlColumn>
-            <MjmlImage src={appLogoSrc} alt={appName} align="left" width="120px" padding="0px 20px 20px 20px" />
-          </MjmlColumn>
-
-          <MjmlColumn>
-            <MjmlSocial icon-size="28px" mode="horizontal" align="right" padding="20px" key={socialMedia}>
-              {socialMedia?.map((a) => (
-                <>
-                  <MjmlSocialElement name={a.name} href={a.href} backgroundColor="#DCDCDC" color="darkgrey" />
-                </>
-              ))}
-            </MjmlSocial>
-          </MjmlColumn>
-        </MjmlSection>
-
-        <MjmlSection padding={0}>
           <MjmlColumn padding={0}>
             <MjmlDivider borderWidth={1} borderColor="#d1deec" />
           </MjmlColumn>
@@ -40,6 +24,13 @@ export const MailmanFooter = (payload: Record<string, any>) => {
               © {new Date().getFullYear()} {appName}
             </MjmlText>
           </MjmlColumn>
+          {/* <MjmlColumn>
+            <MjmlSocial icon-size="28px" mode="horizontal" align="right" padding="20px">
+              {socialMedia.map((a: { name: string; href: string }) => (
+                <MjmlSocialElement key={a.name.toString()} name={a.name} href={a.href} backgroundColor="#DCDCDC" color="darkgrey" />
+              ))}
+            </MjmlSocial>
+          </MjmlColumn> */}
         </MjmlSection>
       </MjmlWrapper>
       <MjmlSpacer height={50} />

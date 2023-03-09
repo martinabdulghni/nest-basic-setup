@@ -18,7 +18,8 @@ export class MailController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(RolesAuthGuard)
   @Roles(UserRole.User)
-  async sendMail(@CurrentUser() user: User, @Payload('order') order: Order) {
-    return await this.mailService.sendMail(user, order);
+  async sendMail(@CurrentUser() user: User, @Payload('order') order: Order, @Ctx() context: RmqContext) {
+    await this.mailService.sendMail(user, order);
+    return this.rmqService.ack(context);
   }
 }

@@ -38,7 +38,7 @@ export const MailmanHeader = (payload: Record<string, any>) => {
           <MjmlImage
             src={appLogoSrc}
             alt={appName}
-            align="center"
+            align="left"
             width={200}
             padding={0}
           />

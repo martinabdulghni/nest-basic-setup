@@ -118,7 +118,7 @@ export class ProfileService {
             name: body.name !== undefined ? body.name : user.name,
             image: body.image !== undefined ? body.image : user.image,
             email: body.email !== undefined ? body.email : user.email,
-            description: body.description !== undefined ? body.description : user.description,
+            desc: body.desc !== undefined ? body.desc : user.desc,
             userConnectionStatus: body.userConnectionStatus !== undefined ? body.userConnectionStatus : user.userConnectionStatus,
             password: body.password !== undefined ? await bcrypt.hash(body.password, 10) : user.password,
             userAccountStatus: {

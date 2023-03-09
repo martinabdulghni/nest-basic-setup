@@ -31,7 +31,7 @@ export class User extends AbstractDocument {
   name: string;
 
   @Prop({ type: String })
-  description: string;
+  desc: string;
 
   @Prop({ type: Date })
   addedDate: Date;
@@ -63,7 +63,7 @@ export class UserBasic extends AbstractDocument {
   name: string;
 
   @Prop({ type: String })
-  description: string;
+  desc: string;
 
   @Prop({ type: Date })
   addedDate: Date;

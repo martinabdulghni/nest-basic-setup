@@ -125,7 +125,7 @@ export class UsersService {
       userConnectionStatus: UserConnectionStatus.Online,
       password: await bcrypt.hash(request.password, 10),
       addedDate: new Date(),
-      description: '',
+      desc: '',
       history: [],
       image: '',
       userAccountStatus: { isBanned: false, isModified: false, isTimedOut: false, isWarned: false, modifiedDate: false },

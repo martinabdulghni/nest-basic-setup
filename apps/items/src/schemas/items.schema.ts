@@ -11,7 +11,7 @@ export class Items extends AbstractDocument {
   @Prop({ type: String })
   name: string;
   @Prop({ type: String })
-  description: string;
+  desc: string;
   @Prop({ type: Number })
   price: number;
   @Prop({ type: Number })
