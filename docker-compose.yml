@@ -48,6 +48,21 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
 
+  job:
+    build:
+      context: .
+      dockerfile: ./apps/job/Dockerfile
+      target: development
+    command: npm run start:dev job
+    env_file:
+      - apps/job/.env
+    depends_on:
+      - auth
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
   items:
     build:
       context: .
@@ -81,23 +96,6 @@ services:
       - /usr/src/app/node_modules
     ports:
       - '3004:3004'
-
-  job:
-    build:
-      context: .
-      dockerfile: ./apps/job/Dockerfile
-      target: development
-    command: npm run start:dev job
-    env_file:
-      - apps/job/.env
-    depends_on:
-      - auth
-      - rabbitmq
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    ports:
-      - '3005:3005'
 
   auth:
     build:

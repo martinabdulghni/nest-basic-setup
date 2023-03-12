@@ -2,7 +2,7 @@ import { BadRequestException, HttpStatus, Inject, Injectable, NotFoundException 
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateOrderObject, OrderItemArray } from './dto/create-order.request';
 import { OrdersRepository } from './orders.repository';
-import { BILLING_SERVICE, MAIL_SERVICE } from './constans/services';
+import { BILLING_SERVICE, JOB_SERVICE, MAIL_SERVICE } from './constans/services';
 import { lastValueFrom } from 'rxjs';
 import { User } from 'apps/auth/src/users/schemas/user.schema';
 import { ClientSession } from 'mongoose';
@@ -19,6 +19,7 @@ export class OrdersService {
     private readonly itemRepository: ItemRepository,
     @Inject(BILLING_SERVICE) private billingClient: ClientProxy,
     @Inject(MAIL_SERVICE) private mailClient: ClientProxy,
+    @Inject(JOB_SERVICE) private jobClient: ClientProxy,
   ) {}
 
   async createOrder(body: OrderItemArray, user: User, req: Request) {
@@ -41,7 +42,11 @@ export class OrdersService {
         }
 
         newOrder.items = itemsArray;
+        //* MAIL SERVICE:
         await this.callMailService(token, newOrder);
+
+        //* JOB SERVICE:
+        await this.callJobService(token, newOrder);
       } catch (error) {
         throw new NotFoundException('item not found.');
       }
@@ -121,7 +126,7 @@ export class OrdersService {
   }
 
   //TODO: When order status is "pending" -> send to billing.
-  private async insertToBilling(authentication: string, orderId: string) {
+  private async callBillingService(authentication: string, orderId: string) {
     await lastValueFrom(
       this.billingClient.emit('order_created', {
         Authentication: authentication,
@@ -131,7 +136,15 @@ export class OrdersService {
   }
   private async callMailService(authentication: string, order: Order) {
     return await lastValueFrom(
-      this.mailClient.emit('send_mail', {
+      this.mailClient.emit('create_mail', {
+        Authentication: authentication,
+        order: order,
+      }),
+    );
+  }
+  private async callJobService(authentication: string, order: Order) {
+    return await lastValueFrom(
+      this.jobClient.emit('create_job_queue', {
         Authentication: authentication,
         order: order,
       }),

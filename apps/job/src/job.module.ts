@@ -11,6 +11,8 @@ import { User, UserSchema } from 'apps/auth/src/users/schemas/user.schema';
 import { Order, orderSchema } from 'apps/orders/src/schemas/order.schema';
 import { CronService } from './cron/cron.service';
 import * as Joi from 'joi';
+import { JobQueue, jobQueueSchema } from './schemas/job-queue.schema';
+import { JobQueueRepository } from './job-queue.repository';
 
 @Module({
   imports: [
@@ -19,7 +21,6 @@ import * as Joi from 'joi';
       validationSchema: Joi.object({
         RABBIT_MQ_URI: Joi.string().required(),
         MONGODB_URI: Joi.string().required(),
-        PORT: Joi.number().required(),
         RABBIT_MQ_JOB_QUEUE: Joi.string().required(),
       }),
       envFilePath: './apps/job/.env',
@@ -27,11 +28,12 @@ import * as Joi from 'joi';
     DatabaseModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([{ name: Order.name, schema: orderSchema }]),
+    MongooseModule.forFeature([{ name: JobQueue.name, schema: jobQueueSchema }]),
     AuthModule,
     RmqModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [JobController],
-  providers: [JobService, CronService, UsersRepository, RolesAuthGuard, CronService],
+  providers: [JobService, CronService, UsersRepository, RolesAuthGuard, CronService, JobQueueRepository],
 })
 export class JobModule {}

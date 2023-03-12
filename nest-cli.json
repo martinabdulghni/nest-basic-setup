@@ -108,6 +108,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/mail/tsconfig.app.json"
       }
+    },
+    "pricing": {
+      "type": "application",
+      "root": "apps/pricing",
+      "entryFile": "main",
+      "sourceRoot": "apps/pricing/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/pricing/tsconfig.app.json"
+      }
+    },
+    "timing": {
+      "type": "application",
+      "root": "apps/timing",
+      "entryFile": "main",
+      "sourceRoot": "apps/timing/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/timing/tsconfig.app.json"
+      }
     }
   }
 }

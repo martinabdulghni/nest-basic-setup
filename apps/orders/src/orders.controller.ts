@@ -15,7 +15,7 @@ export class OrdersController {
 
   @UseGuards(JwtAuthGuard)
   @UseGuards(RolesAuthGuard)
-  @Roles(UserRole.User)
+  @Roles(UserRole.Super, UserRole.SuperAdmin, UserRole.Admin)
   @Post()
   async createOrder(@Body() body: OrderItemArray, @Req() req: Request, @CurrentUser() user: User) {
     return await this.ordersService.createOrder(body, user, req);

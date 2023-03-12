@@ -14,7 +14,7 @@ import { MailService } from './mail.service';
 export class MailController {
   constructor(private readonly mailService: MailService, private readonly rmqService: RmqService) {}
 
-  @EventPattern('send_mail')
+  @EventPattern('create_mail')
   @UseGuards(JwtAuthGuard)
   @UseGuards(RolesAuthGuard)
   @Roles(UserRole.User)

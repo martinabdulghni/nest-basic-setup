@@ -31,7 +31,7 @@ export class RolesAuthGuard implements CanActivate {
       }
       return canAccess;
     } catch (error) {
-      throw new UnauthorizedException('No Token Was Provided')
+      throw new UnauthorizedException('No Token Was Provided');
     }
   }
 }
