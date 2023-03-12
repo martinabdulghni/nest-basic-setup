@@ -6,7 +6,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MailmanModule } from '@squareboat/nest-mailman';
 import { User, UserSchema } from 'apps/auth/src/users/schemas/user.schema';
 import { UsersRepository } from 'apps/auth/src/users/users.repository';
-import { Order, orderSchema } from 'apps/orders/src/schemas/order.schema';
 import * as Joi from 'joi';
 import filesystem, { mailSchema } from '../filesystem';
 import { MailController } from './mail.controller';

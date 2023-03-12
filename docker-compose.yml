@@ -80,6 +80,23 @@ services:
     ports:
       - '3002:3002'
 
+  project:
+    build:
+      context: .
+      dockerfile: ./apps/project/Dockerfile
+      target: development
+    command: npm run start:dev project
+    env_file:
+      - apps/project/.env
+    depends_on:
+      - auth
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3003:3003'
+
   profile:
     build:
       context: .

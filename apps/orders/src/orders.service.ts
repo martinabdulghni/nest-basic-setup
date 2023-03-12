@@ -128,7 +128,7 @@ export class OrdersService {
   //TODO: When order status is "pending" -> send to billing.
   private async callBillingService(authentication: string, orderId: string) {
     await lastValueFrom(
-      this.billingClient.emit('order_created', {
+      this.billingClient.emit('create_mail_new_billing', {
         Authentication: authentication,
         orderId: orderId,
       }),
@@ -136,7 +136,7 @@ export class OrdersService {
   }
   private async callMailService(authentication: string, order: Order) {
     return await lastValueFrom(
-      this.mailClient.emit('create_mail', {
+      this.mailClient.emit('create_mail_new_order', {
         Authentication: authentication,
         order: order,
       }),
